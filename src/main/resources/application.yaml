@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/poo_two_project_db
+    url: jdbc:postgresql://localhost:5432/avaliacao
     username: poo_user
     password: 123456
 
