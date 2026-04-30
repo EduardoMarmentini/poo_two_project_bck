@@ -25,7 +25,7 @@ psql -U postgres
 ## 🧱 2. Criar o banco de dados
 
 ```sql
-CREATE DATABASE poo_two_project_db;
+CREATE DATABASE avaliacao;
 ```
 
 Verificar se foi criado:
