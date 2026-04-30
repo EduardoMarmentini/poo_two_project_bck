@@ -53,22 +53,7 @@ GRANT ALL PRIVILEGES ON DATABASE poo_two_project_db TO poo_user;
 
 ---
 
-## 🔌 5. Configurar no Spring Boot
-
-Arquivo: `src/main/resources/application.properties`
-
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/poo_two_project_db
-spring.datasource.username=poo_user
-spring.datasource.password=123456
-
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-```
-
----
-
-## 📦 6. Dependência Maven
+## 📦 5. Dependência Maven
 
 Adicionar no `pom.xml`:
 
@@ -81,7 +66,7 @@ Adicionar no `pom.xml`:
 
 ---
 
-## ▶️ 7. Executar o projeto
+## ▶️ 6. Executar o projeto
 
 ```bash
 mvn spring-boot:run
