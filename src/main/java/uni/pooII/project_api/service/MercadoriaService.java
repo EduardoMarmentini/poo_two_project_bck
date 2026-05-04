@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import uni.pooII.project_api.dto.mercadorias.MercadoriaRequestDTO;
 import uni.pooII.project_api.dto.mercadorias.MercadoriaResponseDTO;
+import uni.pooII.project_api.dto.mercadorias.MercadoriaPatchDTO;
 import uni.pooII.project_api.exception.NotFoundException;
 import uni.pooII.project_api.mapper.MercadoriaMapper;
 import uni.pooII.project_api.model.Fornecedor;
@@ -68,6 +69,27 @@ public class MercadoriaService {
             throw new NotFoundException("Mercadoria não encontrada");
         }
         repository.deleteById(id);
+    }
+
+    // UPDATE PARCIAL (PATCH)
+    public MercadoriaResponseDTO atualizarParcial(Long id, MercadoriaPatchDTO dto) {
+        Mercadoria mercadoria = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Mercadoria não encontrada"));
+
+        // Atualizar apenas os campos fornecidos
+        dto.getNome().ifPresent(mercadoria::setNome);
+        dto.getDescricao().ifPresent(mercadoria::setDescricao);
+        dto.getDataValidade().ifPresent(mercadoria::setDataValidade);
+        dto.getQuantidade().ifPresent(mercadoria::setQuantidade);
+
+        // Se fornecedor foi fornecido, atualizar
+        if (dto.getFornecedorId().isPresent()) {
+            Fornecedor fornecedor = fornecedorRepository.findById(dto.getFornecedorId().get())
+                    .orElseThrow(() -> new NotFoundException("Fornecedor não encontrado"));
+            mercadoria.setFornecedor(fornecedor);
+        }
+
+        return MercadoriaMapper.toResponse(repository.save(mercadoria));
     }
 
     // LISTAR POR FORNECEDOR (apenas mercadorias com estoque > 0)

@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uni.pooII.project_api.dto.mercadorias.MercadoriaRequestDTO;
 import uni.pooII.project_api.dto.mercadorias.MercadoriaResponseDTO;
+import uni.pooII.project_api.dto.mercadorias.MercadoriaPatchDTO;
 import uni.pooII.project_api.service.MercadoriaService;
 
 import java.util.List;
@@ -44,6 +45,15 @@ public class MercadoriaController {
             @RequestBody @Valid MercadoriaRequestDTO dto) {
 
         return ResponseEntity.ok(service.atualizar(id, dto));
+    }
+
+    // UPDATE PARCIAL (PATCH)
+    @PatchMapping("/{id}")
+    public ResponseEntity<MercadoriaResponseDTO> atualizarParcial(
+            @PathVariable Long id,
+            @RequestBody MercadoriaPatchDTO dto) {
+
+        return ResponseEntity.ok(service.atualizarParcial(id, dto));
     }
 
     // DELETE
