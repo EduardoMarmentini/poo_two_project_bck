@@ -30,9 +30,9 @@ public class MercadoriaService {
         return MercadoriaMapper.toResponse(repository.save(mercadoria));
     }
 
-    // LISTAR (apenas mercadorias com estoque > 0)
+    // LISTAR (todas as mercadorias, inclusive com estoque zerado)
     public List<MercadoriaResponseDTO> listar() {
-        return repository.findByQuantidadeGreaterThan(0)
+        return repository.findAll()
                 .stream()
                 .map(MercadoriaMapper::toResponse)
                 .toList();
@@ -92,7 +92,7 @@ public class MercadoriaService {
         return MercadoriaMapper.toResponse(repository.save(mercadoria));
     }
 
-    // LISTAR POR FORNECEDOR (apenas mercadorias com estoque > 0)
+    // LISTAR POR FORNECEDOR (todas as mercadorias, inclusive com estoque zerado)
     public List<MercadoriaResponseDTO> listarPorFornecedor(Long fornecedorId) {
         if (!fornecedorRepository.existsById(fornecedorId)) {
             throw new NotFoundException("Fornecedor não encontrado");
@@ -100,7 +100,6 @@ public class MercadoriaService {
 
         return repository.findByFornecedorId(fornecedorId)
                 .stream()
-                .filter(m -> m.getQuantidade() > 0)
                 .map(MercadoriaMapper::toResponse)
                 .toList();
     }
