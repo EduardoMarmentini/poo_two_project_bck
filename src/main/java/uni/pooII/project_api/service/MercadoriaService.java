@@ -30,7 +30,7 @@ public class MercadoriaService {
         return MercadoriaMapper.toResponse(repository.save(mercadoria));
     }
 
-    // LISTAR (todas as mercadorias, inclusive com estoque zerado)
+    // LISTAR
     public List<MercadoriaResponseDTO> listar() {
         return repository.findAll()
                 .stream()
@@ -76,13 +76,13 @@ public class MercadoriaService {
         Mercadoria mercadoria = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Mercadoria não encontrada"));
 
-        // Atualizar apenas os campos fornecidos
+        // atualiza apenas os campos fornecidos
         dto.getNome().ifPresent(mercadoria::setNome);
         dto.getDescricao().ifPresent(mercadoria::setDescricao);
         dto.getDataValidade().ifPresent(mercadoria::setDataValidade);
         dto.getQuantidade().ifPresent(mercadoria::setQuantidade);
 
-        // Se fornecedor foi fornecido, atualizar
+        // se o fornecedor foi fornecido atualiza
         if (dto.getFornecedorId().isPresent()) {
             Fornecedor fornecedor = fornecedorRepository.findById(dto.getFornecedorId().get())
                     .orElseThrow(() -> new NotFoundException("Fornecedor não encontrado"));
@@ -92,7 +92,7 @@ public class MercadoriaService {
         return MercadoriaMapper.toResponse(repository.save(mercadoria));
     }
 
-    // LISTAR POR FORNECEDOR (todas as mercadorias, inclusive com estoque zerado)
+    // LISTAR POR FORNECEDOR 
     public List<MercadoriaResponseDTO> listarPorFornecedor(Long fornecedorId) {
         if (!fornecedorRepository.existsById(fornecedorId)) {
             throw new NotFoundException("Fornecedor não encontrado");

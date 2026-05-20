@@ -48,7 +48,7 @@ CREATE USER poo_user WITH PASSWORD '123456';
 
 ```sql
 ALTER ROLE poo_user CREATEDB;
-GRANT ALL PRIVILEGES ON DATABASE poo_two_project_db TO poo_user;
+GRANT ALL PRIVILEGES ON DATABASE avaliacao TO poo_user;
 ```
 
 ---

@@ -1,3 +1,7 @@
+Tabela de Fornecedores
+
+```sql
+
 CREATE TABLE fornecedores (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
@@ -13,6 +17,10 @@ CREATE TABLE fornecedores (
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+``
+Tabela de Mercadorias
+
+```sql
 CREATE TABLE mercadorias (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
@@ -27,6 +35,10 @@ CREATE TABLE mercadorias (
         REFERENCES fornecedores(id)
         ON DELETE SET NULL
 );
+```
+Alterar proprietário das tabelas para o usuário criado
 
+```sql
 ALTER TABLE fornecedores OWNER TO poo_user;
 ALTER TABLE mercadorias OWNER TO poo_user;
+```

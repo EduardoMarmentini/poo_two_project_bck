@@ -47,7 +47,7 @@ public class MercadoriaController {
         return ResponseEntity.ok(service.atualizar(id, dto));
     }
 
-    // UPDATE PARCIAL (PATCH)
+    // UPDATE PARCIAL
     @PatchMapping("/{id}")
     public ResponseEntity<MercadoriaResponseDTO> atualizarParcial(
             @PathVariable Long id,
