@@ -19,6 +19,8 @@ public class MercadoriaMapper {
     }
 
     public static MercadoriaResponseDTO toResponse(Mercadoria entity) {
+        Fornecedor fornecedor = entity.getFornecedor();
+
         return MercadoriaResponseDTO.builder()
                 .id(entity.getId())
                 .nome(entity.getNome())
@@ -26,8 +28,8 @@ public class MercadoriaMapper {
                 .dataValidade(entity.getDataValidade())
                 .dataCadastro(entity.getDataCadastro())
                 .quantidade(entity.getQuantidade())
-                .fornecedorId(entity.getFornecedor().getId())
-                .nomeFornecedor(entity.getFornecedor().getNome())
+                .fornecedorId(fornecedor != null ? fornecedor.getId() : null)
+                .nomeFornecedor(fornecedor != null ? fornecedor.getNome() : null)
                 .build();
     }
 }
