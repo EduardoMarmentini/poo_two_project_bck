@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import uni.pooII.project_api.dto.mercadorias.MercadoriaRequestDTO;
 import uni.pooII.project_api.dto.mercadorias.MercadoriaResponseDTO;
 import uni.pooII.project_api.dto.mercadorias.MercadoriaPatchDTO;
+import uni.pooII.project_api.dto.mercadorias.MovimentacaoRequestDTO;
+import uni.pooII.project_api.exception.BadRequestException;
 import uni.pooII.project_api.exception.NotFoundException;
 import uni.pooII.project_api.mapper.MercadoriaMapper;
 import uni.pooII.project_api.model.Fornecedor;
@@ -102,5 +104,27 @@ public class MercadoriaService {
                 .stream()
                 .map(MercadoriaMapper::toResponse)
                 .toList();
+    }
+
+    // MOVIMENTAÇÃO DE ESTOQUE (ENTRADA/SAIDA) - permitido para todos perfis
+    public MercadoriaResponseDTO movimentar(Long id, MovimentacaoRequestDTO dto) {
+        Mercadoria mercadoria = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Mercadoria não encontrada"));
+
+        String tipo = dto.getTipo().toUpperCase();
+        if (!tipo.equals("ENTRADA") && !tipo.equals("SAIDA")) {
+            throw new BadRequestException("Tipo deve ser ENTRADA ou SAIDA");
+        }
+
+        int novaQtd;
+        if (tipo.equals("ENTRADA")) {
+            novaQtd = mercadoria.getQuantidade() + dto.getQuantidade();
+        } else {
+            novaQtd = mercadoria.getQuantidade() - dto.getQuantidade();
+            if (novaQtd < 0) novaQtd = 0;
+        }
+
+        mercadoria.setQuantidade(novaQtd);
+        return MercadoriaMapper.toResponse(repository.save(mercadoria));
     }
 }
