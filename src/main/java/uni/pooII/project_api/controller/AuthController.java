@@ -34,7 +34,13 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserResponseDTO> me(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> me(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(401).body(Map.of(
+                    "status", 401,
+                    "message", "Não autenticado"
+            ));
+        }
         return ResponseEntity.ok(authService.me(userDetails.getUsername()));
     }
 

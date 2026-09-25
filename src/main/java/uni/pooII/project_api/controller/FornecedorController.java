@@ -11,7 +11,7 @@ import uni.pooII.project_api.service.FornecedorService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/fornecedores")
+@RequestMapping({"/fornecedores", "/api/fornecedores"})
 @RequiredArgsConstructor
 public class FornecedorController {
 

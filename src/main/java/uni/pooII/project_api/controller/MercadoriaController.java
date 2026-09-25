@@ -14,7 +14,7 @@ import uni.pooII.project_api.service.MercadoriaService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/mercadorias")
+@RequestMapping({"/mercadorias", "/api/mercadorias"})
 @RequiredArgsConstructor
 public class MercadoriaController {
 

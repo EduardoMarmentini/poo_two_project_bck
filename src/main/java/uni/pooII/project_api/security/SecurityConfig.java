@@ -32,16 +32,33 @@ public class SecurityConfig {
             .cors(cors -> {})
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .exceptionHandling(ex -> ex
+                .authenticationEntryPoint((req, res, authEx) -> {
+                    res.setStatus(401);
+                    res.setContentType("application/json");
+                    res.getWriter().write("{\"status\":401,\"message\":\"Não autenticado\"}");
+                })
+                .accessDeniedHandler((req, res, accessEx) -> {
+                    res.setStatus(403);
+                    res.setContentType("application/json");
+                    res.getWriter().write("{\"status\":403,\"message\":\"Acesso negado\"}");
+                })
+            )
             .authorizeHttpRequests(auth -> auth
-                // public
-                .requestMatchers("/api/auth/**").permitAll()
+                // public auth endpoints (login, refresh, oauth). NÃO inclui /api/auth/me que deve ser autenticado
+                .requestMatchers("/api/auth/login", "/api/auth/refresh", "/api/auth/oauth/**", "/api/auth/register").permitAll()
                 .requestMatchers("/.well-known/**", "/oauth2/**", "/error").permitAll()
-                // GET público autenticado (todos roles)
+                // API com prefixo /api para funcionar atrás do nginx
+                .requestMatchers(HttpMethod.GET, "/api/fornecedores/**", "/api/mercadorias/**").hasAnyAuthority("SYSTEM_ADMIN", "SYSTEM_MANAGER", "SYSTEM_USER")
+                .requestMatchers(HttpMethod.POST, "/api/mercadorias/*/movimentacao").hasAnyAuthority("SYSTEM_ADMIN", "SYSTEM_MANAGER", "SYSTEM_USER")
+                .requestMatchers(HttpMethod.PATCH, "/api/mercadorias/**").hasAnyAuthority("SYSTEM_ADMIN", "SYSTEM_MANAGER", "SYSTEM_USER")
+                .requestMatchers(HttpMethod.POST, "/api/mercadorias/**", "/api/fornecedores/**").hasAnyAuthority("SYSTEM_ADMIN", "SYSTEM_MANAGER")
+                .requestMatchers(HttpMethod.PUT, "/api/mercadorias/**", "/api/fornecedores/**").hasAnyAuthority("SYSTEM_ADMIN", "SYSTEM_MANAGER")
+                .requestMatchers(HttpMethod.DELETE, "/api/mercadorias/**", "/api/fornecedores/**").hasAnyAuthority("SYSTEM_ADMIN", "SYSTEM_MANAGER")
+                // endpoints sem prefixo /api (acesso direto ou legado)
                 .requestMatchers(HttpMethod.GET, "/mercadorias/**", "/fornecedores/**").hasAnyAuthority("SYSTEM_ADMIN", "SYSTEM_MANAGER", "SYSTEM_USER")
-                // Movimento de estoque: todos roles autenticados
                 .requestMatchers(HttpMethod.POST, "/mercadorias/*/movimentacao").hasAnyAuthority("SYSTEM_ADMIN", "SYSTEM_MANAGER", "SYSTEM_USER")
                 .requestMatchers(HttpMethod.PATCH, "/mercadorias/**").hasAnyAuthority("SYSTEM_ADMIN", "SYSTEM_MANAGER", "SYSTEM_USER")
-                // escrita restrita a ADMIN e MANAGER
                 .requestMatchers(HttpMethod.POST, "/mercadorias/**", "/fornecedores/**").hasAnyAuthority("SYSTEM_ADMIN", "SYSTEM_MANAGER")
                 .requestMatchers(HttpMethod.PUT, "/mercadorias/**", "/fornecedores/**").hasAnyAuthority("SYSTEM_ADMIN", "SYSTEM_MANAGER")
                 .requestMatchers(HttpMethod.DELETE, "/mercadorias/**", "/fornecedores/**").hasAnyAuthority("SYSTEM_ADMIN", "SYSTEM_MANAGER")
@@ -58,7 +75,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedOriginPatterns(List.of("http://localhost:3000", "https://localhost:3000", "https://techhub.local", "http://techhub.local", "https://techhub.local:*", "http://techhub.local:*"));
         config.setAllowedMethods(List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);

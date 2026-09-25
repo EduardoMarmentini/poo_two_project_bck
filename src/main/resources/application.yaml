@@ -1,23 +1,26 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/avaliacao
-    username: poo_user
-    password: 123456
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/avaliacao}
+    username: ${SPRING_DATASOURCE_USERNAME:poo_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:123456}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
 
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+    show-sql: ${SPRING_JPA_SHOW_SQL:true}
     properties:
       hibernate:
         format_sql: true
 
 app:
   jwt:
-    secret: 5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437a5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437
-    expiration-ms: 3600000
-    refresh-expiration-ms: 86400000
-    issuer: http://localhost:8080
+    secret: ${APP_JWT_SECRET:5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437a5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437}
+    expiration-ms: ${APP_JWT_EXPIRATION_MS:3600000}
+    refresh-expiration-ms: ${APP_JWT_REFRESH_EXPIRATION_MS:86400000}
+    issuer: ${APP_JWT_ISSUER:https://techhub.local}
 
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}

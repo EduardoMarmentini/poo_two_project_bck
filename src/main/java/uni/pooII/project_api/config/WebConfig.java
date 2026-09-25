@@ -14,7 +14,7 @@ public class WebConfig {
             public void addCorsMappings(CorsRegistry registry) {
 
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3000")
+                        .allowedOriginPatterns("http://localhost:3000", "https://localhost:3000", "https://techhub.local", "http://techhub.local")
                         .allowedMethods("*")
                         .allowedHeaders("*")
                         .allowCredentials(true);
