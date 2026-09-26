@@ -27,10 +27,18 @@ public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
 
     @Bean
+    @SuppressWarnings("java:S4502")
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .cors(cors -> {})
-            .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf.requireCsrfProtectionMatcher(request -> {
+                String path = request.getRequestURI();
+                return !(path.startsWith("/api/")
+                    || path.startsWith("/fornecedores/")
+                    || path.startsWith("/mercadorias/")
+                    || path.startsWith("/oauth2/")
+                    || path.startsWith("/.well-known/"));
+            }))
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .exceptionHandling(ex -> ex
                 .authenticationEntryPoint((req, res, authEx) -> {
